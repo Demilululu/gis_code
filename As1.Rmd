@@ -1,0 +1,92 @@
+---
+title: "Assignment 1"
+author: "Chia-Yin, Lu"
+date: "6 November 2018"
+output: html_document
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+JPdataOSK <- read.csv("JPdata.csv")
+
+install.packages("imager","D:\\RProject1")
+
+library(imager)
+library(maptools)
+library(RColorBrewer)
+library(classInt)
+library(OpenStreetMap)
+library(sp)
+library(rgeos)
+library(tmap)
+library(tmaptools)
+library(sf)
+library(rgdal)
+library(geojsonio)
+
+JPdataSF<- read_shape("C:\\Users\\demi8\\OneDrive\\桌面\\Postgrad\\CASA0005 GIS\\Assignment1\\JPN_adm\\JPN_adm1.shp", as.sf = TRUE)
+
+qtm(JPdataSF)
+
+library(ggplot2)
+
+#rename the column to ensure it can be found for matching
+JPdataOSK<- edit(JPdataOSK)
+
+#Join attribute data
+JPdataMap <- append_data(JPdataSF,JPdataOSK, key.shp = "ID_1", key.data = "ID_prefecture", ignore.duplicates = TRUE)
+
+#Making maps
+library(tmap)
+library(tmaptools)
+tmap_mode("plot")
+qtm(JPdataMap, fill = "Monthly_rent__yen_2008")
+
+
+
+library(shinyjs)
+tmaptools::palette_explorer()
+
+
+By using the package tmap in R, it helps to prodcue the following
+```{r}
+JPdata_osm <- read_osm(JPdataMap, type = "esri", zoom = NULL)
+
+qtm(JPdata_osm) +
+tm_shape(JPdataMap) +
+tm_polygons("Monthly_rent__yen_2008",
+style="kmeans",                                                             
+palette="PuRd", n = 5,
+midpoint=NA,
+title="Rent monthly in each prefecture",
+alpha = 0.5) +
+tm_compass(position = c("left", "bottom"),type = "arrow") +
+tm_scale_bar(position = c("left", "bottom")) +
+tm_layout(title = "Average Monthly rent for a living house",legend.position = c("right", "bottom"))
+```
+
+
+

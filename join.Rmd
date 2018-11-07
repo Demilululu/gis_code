@@ -25,5 +25,5 @@ LondonMapSF <- append_data(LondonMapSF,LondonData, key.shp = "lad15cd", key.data
 qtm(LondonMapSF, fill = "% Not Born in UK - 2011")
 ```
 
-
-
+install.packages("citr","D:\\RProject1")
+library(citr)
